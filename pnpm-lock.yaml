@@ -53,6 +53,9 @@ devDependencies:
   jest:
     specifier: ^29.7.0
     version: 29.7.0(@types/node@20.10.0)
+  jest-chrome:
+    specifier: github:byverdu/jest-chrome
+    version: github.com/byverdu/jest-chrome/71ebbfe0e2e94b27da2ffaaa8664509466b6b4e9
   jest-environment-jsdom:
     specifier: ^29.7.0
     version: 29.7.0
@@ -1014,6 +1017,13 @@ packages:
     resolution: {integrity: sha512-mSM/iKUk5fDDrEV/e83qY+Cr3I1+Q3qqTuEn++HAWYjEa1+NxZr6CNrcJGf2ZTnq4HoFGC3zaTPZTobCzCFukA==}
     dependencies:
       '@babel/types': 7.23.4
+    dev: true
+
+  /@types/chrome@0.0.235:
+    resolution: {integrity: sha512-SPj9A4E35SBJICjnL04KZEA/eVr8Km7gbnEfAxzaU2fHpLSnN64OPnfOR3EpDJXXpSORKTn3OUDwugw+rYBBXA==}
+    dependencies:
+      '@types/filesystem': 0.0.35
+      '@types/har-format': 1.2.15
     dev: true
 
   /@types/chrome@0.0.253:
@@ -4703,4 +4713,12 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  github.com/byverdu/jest-chrome/71ebbfe0e2e94b27da2ffaaa8664509466b6b4e9:
+    resolution: {tarball: https://codeload.github.com/byverdu/jest-chrome/tar.gz/71ebbfe0e2e94b27da2ffaaa8664509466b6b4e9}
+    name: jest-chrome
+    version: 0.8.0
+    dependencies:
+      '@types/chrome': 0.0.235
     dev: true
