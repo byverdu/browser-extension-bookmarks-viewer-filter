@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "prepare": "npx husky install",
-    "test": "jest --passWithNoTests",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build": "pnpm run lint && pnpm run test && ./build.sh",
     "lint": "npx eslint ./extension/**/*.js",
     "prettier": "npx prettier --write  extension/**/*.js",
@@ -27,7 +27,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
+        "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@commitlint/cz-commitlint": "^18.4.3",
     "@commitlint/prompt": "^18.4.3",
@@ -36,7 +36,7 @@
     "@types/eslint": "^8.44.7",
     "@types/jest": "^29.5.10",
     "@types/node": "^20.10.0",
-    "commitizen": "^4.3.0",
+        "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.54.0",
     "html-minifier-terser": "^7.2.0",

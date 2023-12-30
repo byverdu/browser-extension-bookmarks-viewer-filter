@@ -1,0 +1,123 @@
+import { jest } from '@jest/globals';
+import { when } from 'jest-when';
+import { api as extensionApi } from '../extension/api';
+import { chrome } from 'jest-chrome';
+
+const { setStorage, getStorage, sendMessage, onMessage, removeStorage } =
+  extensionApi;
+
+const tabs = [{ id: '123' }];
+const tabsStorage = { tabs };
+
+describe('api', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    when(chrome.storage.local.get)
+      .calledWith('tabs')
+      .mockResolvedValue(tabsStorage);
+  });
+
+  describe('setStorage', () => {
+    it('should be defined', () => {
+      expect(setStorage).toBeInstanceOf(Function);
+    });
+
+    it('should call chrome.storage.local.set', async () => {
+      await setStorage('tabs', tabs);
+
+      expect(chrome.storage.local.set).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.local.set).toHaveBeenCalledWith(tabsStorage);
+    });
+
+    it('should set the sync storage', async () => {
+      await setStorage('tabs', tabs);
+
+      await expect(chrome.storage.local.get('tabs')).resolves.toEqual(
+        tabsStorage,
+      );
+    });
+  });
+
+  describe('getStorage', () => {
+    it('should be defined', () => {
+      expect(getStorage).toBeInstanceOf(Function);
+    });
+
+    it('should call chrome.storage.local.get', async () => {
+      await getStorage('tabs');
+
+      expect(chrome.storage.local.get).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.local.get).toHaveBeenCalledWith('tabs');
+    });
+
+    it('should get the storage for the given key, "tabs"', async () => {
+      await expect(getStorage('tabs')).resolves.toEqual(tabsStorage);
+    });
+
+    it('should get the storage for the given key, "crabs"', async () => {
+      await expect(getStorage('crabs')).resolves.toEqual(undefined);
+    });
+  });
+
+  describe('sendMessage', () => {
+    it('should be defined', () => {
+      expect(sendMessage).toBeInstanceOf(Function);
+    });
+
+    it('should call chrome.runtime.sendMessage', async () => {
+      await sendMessage({
+        type: 'SET_STORAGE',
+        payload: [],
+      });
+
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledTimes(1);
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+        type: 'SET_STORAGE',
+        payload: [],
+      });
+    });
+  });
+
+  describe('onMessage', () => {
+    it('should be defined', () => {
+      expect(onMessage).toBeInstanceOf(Function);
+    });
+
+    it('should call chrome.runtime.onMessage', () => {
+      const listenerSpy = jest.fn();
+      const sendResponseSpy = jest.fn();
+
+      onMessage(listenerSpy);
+
+      expect(listenerSpy).not.toBeCalled();
+      expect(chrome.runtime.onMessage.hasListeners()).toBe(true);
+
+      chrome.runtime.onMessage.callListeners(
+        { greeting: 'hello' }, // message
+        {}, // MessageSender object
+        sendResponseSpy, // SendResponse function
+      );
+
+      expect(listenerSpy).toHaveBeenCalledWith(
+        { greeting: 'hello' },
+        {},
+        sendResponseSpy,
+      );
+      expect(sendResponseSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('removeStorage', () => {
+    it('should be defined', () => {
+      expect(removeStorage).toBeInstanceOf(Function);
+    });
+
+    it('should call chrome.storage.sync.remove', async () => {
+      await removeStorage('tabs');
+
+      expect(chrome.storage.sync.remove).toBeCalledTimes(1);
+      expect(chrome.storage.sync.remove).toBeCalledWith('tabs');
+    });
+  });
+});

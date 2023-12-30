@@ -1,7 +1,3 @@
-Object.assign(global, require('jest-chrome'));
-Object.defineProperty(window.crypto, 'randomUUID', {
-  value: () => '5678',
+import('jest-chrome').then(chrome => {
+  Object.assign(global, chrome);
 });
-
-console.error = jest.fn();
-console.info = jest.fn();

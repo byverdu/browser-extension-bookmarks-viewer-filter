@@ -5,4 +5,4 @@ yarn-error.log
 /dist
 /coverage
 .env
-browserExtensionBoilerplate.zip
+*.zip
