@@ -6,16 +6,16 @@ import { chrome } from 'jest-chrome';
 const { setStorage, getStorage, sendMessage, onMessage, removeStorage } =
   extensionApi;
 
-const tabs = [{ id: '123' }];
-const tabsStorage = { tabs };
+const links = [{ id: '123' }];
+const linksStorage = { links };
 
 describe('api', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     when(chrome.storage.local.get)
-      .calledWith('tabs')
-      .mockResolvedValue(tabsStorage);
+      .calledWith('links')
+      .mockResolvedValue(linksStorage);
   });
 
   describe('setStorage', () => {
@@ -24,17 +24,17 @@ describe('api', () => {
     });
 
     it('should call chrome.storage.local.set', async () => {
-      await setStorage('tabs', tabs);
+      await setStorage('links', links);
 
       expect(chrome.storage.local.set).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.set).toHaveBeenCalledWith(tabsStorage);
+      expect(chrome.storage.local.set).toHaveBeenCalledWith(linksStorage);
     });
 
     it('should set the sync storage', async () => {
-      await setStorage('tabs', tabs);
+      await setStorage('links', links);
 
-      await expect(chrome.storage.local.get('tabs')).resolves.toEqual(
-        tabsStorage,
+      await expect(chrome.storage.local.get('links')).resolves.toEqual(
+        linksStorage,
       );
     });
   });
@@ -45,14 +45,14 @@ describe('api', () => {
     });
 
     it('should call chrome.storage.local.get', async () => {
-      await getStorage('tabs');
+      await getStorage('links');
 
       expect(chrome.storage.local.get).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.get).toHaveBeenCalledWith('tabs');
+      expect(chrome.storage.local.get).toHaveBeenCalledWith('links');
     });
 
-    it('should get the storage for the given key, "tabs"', async () => {
-      await expect(getStorage('tabs')).resolves.toEqual(tabsStorage);
+    it('should get the storage for the given key, "links"', async () => {
+      await expect(getStorage('links')).resolves.toEqual(linksStorage);
     });
 
     it('should get the storage for the given key, "crabs"', async () => {
@@ -114,10 +114,10 @@ describe('api', () => {
     });
 
     it('should call chrome.storage.sync.remove', async () => {
-      await removeStorage('tabs');
+      await removeStorage('links');
 
-      expect(chrome.storage.sync.remove).toBeCalledTimes(1);
-      expect(chrome.storage.sync.remove).toBeCalledWith('tabs');
+      expect(chrome.storage.sync.remove).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.sync.remove).toHaveBeenCalledWith('links');
     });
   });
 });

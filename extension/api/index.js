@@ -13,4 +13,11 @@
   removeStorage: async key => await chrome.storage.sync.remove(key),
 };
 
-export { api };
+const EXTENSION_NAME = 'VisitedLinks';
+const ACTIONS = {
+  GET_STORAGE: 'GET_STORAGE',
+  SET_STORAGE: 'SET_STORAGE',
+  REMOVE_STORAGE: 'REMOVE_STORAGE',
+};
+
+export { api, EXTENSION_NAME, ACTIONS };
