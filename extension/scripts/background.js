@@ -12,8 +12,6 @@ const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE } = ACTIONS;
  * @param {VisitedLink[]} values
  */
 async function setStorageAsync(key, values) {
-  console.log(key, values);
-
   await setStorage(key, values);
 }
 
@@ -42,7 +40,6 @@ async function removeStorageAsync(key) {
  * @returns void
  */
 function onMessageCallback(msg, sender, sendResponse) {
-  console.log(msg);
   if (sender && msg && msg.type) {
     if (msg.type === SET_STORAGE) {
       /**

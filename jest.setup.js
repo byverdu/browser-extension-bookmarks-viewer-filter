@@ -1,3 +1,1 @@
-import('jest-chrome').then(chrome => {
-  Object.assign(global, chrome);
-});
+Object.assign(global, require('jest-chrome'));

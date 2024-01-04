@@ -1,10 +1,8 @@
-import { jest } from '@jest/globals';
 import { when } from 'jest-when';
-import { api as extensionApi } from '../extension/api';
+import { api } from '../extension/api';
 import { chrome } from 'jest-chrome';
 
-const { setStorage, getStorage, sendMessage, onMessage, removeStorage } =
-  extensionApi;
+const { setStorage, getStorage, sendMessage, onMessage, removeStorage } = api;
 
 const links = [{ id: '123' }];
 const linksStorage = { links };
