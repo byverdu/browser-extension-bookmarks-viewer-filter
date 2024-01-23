@@ -43,7 +43,7 @@ function onMessageCallback(msg, sender, sendResponse) {
   if (sender && msg && msg.type) {
     if (msg.type === SET_STORAGE) {
       /**
-       * @type {SendMsgPayload<SyncStorage>}
+       * @type {Payload<VisitedLink[]>}
        */
       const { key, value } = msg.payload;
       setStorageAsync(key, value);
@@ -51,10 +51,10 @@ function onMessageCallback(msg, sender, sendResponse) {
 
     if (msg.type === GET_STORAGE) {
       /**
-       * @type {SendMsgPayload<ExtensionItems>}
+       * @type {Payload<unknown>}
        */
-      const { value } = msg.payload;
-      getStorageAsync(sendResponse, value);
+      const { key } = msg.payload;
+      getStorageAsync(sendResponse, key);
 
       // make it asynchronously by returning true
       return true;
@@ -62,10 +62,10 @@ function onMessageCallback(msg, sender, sendResponse) {
 
     if (msg.type === REMOVE_STORAGE) {
       /**
-       * @type {SendMsgPayload<ExtensionItems[]>}
+       * @type {Payload<unknown>}
        */
-      const { value } = msg.payload;
-      removeStorageAsync(value);
+      const { key } = msg.payload;
+      removeStorageAsync(key);
     }
   } else {
     console.info('No messages found');
