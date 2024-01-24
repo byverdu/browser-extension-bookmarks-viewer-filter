@@ -5,7 +5,7 @@ import { api, ACTIONS } from '../api/index.js';
  */
 const { onMessage, getStorage, setStorage, removeStorage } = api;
 
-const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE } = ACTIONS;
+const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE } = ACTIONS;
 
 /**
  * @param {APIKey} key
@@ -30,6 +30,17 @@ async function getStorageAsync(sendResponse, key) {
  */
 async function removeStorageAsync(key) {
   await removeStorage(key);
+}
+
+/**
+ * @param {APIKey} key
+ * @param {VisitedLink} value
+ */
+async function updateStorageAsync(key, value) {
+  const { [key]: items } = await getStorage(key);
+  const newLinks = [...items, value];
+  console.log(newLinks);
+  await setStorage(key, newLinks);
 }
 
 /**
@@ -66,6 +77,15 @@ function onMessageCallback(msg, sender, sendResponse) {
        */
       const { key } = msg.payload;
       removeStorageAsync(key);
+    }
+
+    if (msg.type === UPDATE_STORAGE) {
+      /**
+       * @type {Payload<VisitedLink>}
+       */
+      const { key, value } = msg.payload;
+
+      updateStorageAsync(key, value);
     }
   } else {
     console.info('No messages found');

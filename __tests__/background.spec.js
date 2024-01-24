@@ -7,6 +7,11 @@ jest.mock('../extension/api');
 const sendResponse = jest.fn();
 const onMessageCallback = utilsRewire.__get__('onMessageCallback');
 const links = [{ id: '123' }];
+const {
+  api: extApi,
+  ACTIONS: { SET_STORAGE, GET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE },
+  EXTENSION_NAME,
+} = api;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -23,65 +28,90 @@ describe('onMessage', () => {
 
   describe('SET_STORAGE', () => {
     it('should call api.setStorage', async () => {
-      jest.spyOn(api.api, 'setStorage');
+      jest.spyOn(extApi, 'setStorage');
 
       await onMessageCallback(
         {
-          type: api.ACTIONS.SET_STORAGE,
+          type: SET_STORAGE,
           payload: {
-            key: api.EXTENSION_NAME,
+            key: EXTENSION_NAME,
             value: links,
           },
         },
         {},
       );
 
-      expect(api.api.setStorage).toHaveBeenCalledTimes(1);
-      expect(api.api.setStorage).toHaveBeenCalledWith(
-        api.EXTENSION_NAME,
-        links,
-      );
+      expect(extApi.setStorage).toHaveBeenCalledTimes(1);
+      expect(extApi.setStorage).toHaveBeenCalledWith(EXTENSION_NAME, links);
     });
   });
   describe('GET_STORAGE', () => {
     it('should call api.getStorage', async () => {
-      jest.spyOn(api.api, 'getStorage');
+      jest.spyOn(extApi, 'getStorage');
 
-      when(api.api.getStorage)
-        .calledWith(api.EXTENSION_NAME)
-        .mockResolvedValue({ [api.EXTENSION_NAME]: links });
+      when(extApi.getStorage)
+        .calledWith(EXTENSION_NAME)
+        .mockResolvedValue({ [EXTENSION_NAME]: links });
 
       await onMessageCallback(
         {
-          type: api.ACTIONS.GET_STORAGE,
+          type: GET_STORAGE,
           payload: {
-            value: api.EXTENSION_NAME,
+            key: EXTENSION_NAME,
           },
         },
         {},
         sendResponse,
       );
 
-      expect(api.api.getStorage).toHaveBeenCalledTimes(1);
-      expect(api.api.getStorage).toHaveBeenCalledWith(api.EXTENSION_NAME);
+      expect(extApi.getStorage).toHaveBeenCalledTimes(1);
+      expect(extApi.getStorage).toHaveBeenCalledWith(EXTENSION_NAME);
       expect(sendResponse).toHaveBeenCalledWith(links);
     });
   });
 
   describe('REMOVE_STORAGE', () => {
     it('should call api.setStorage', async () => {
-      jest.spyOn(api.api, 'removeStorage');
+      jest.spyOn(extApi, 'removeStorage');
 
       onMessageCallback(
         {
-          type: api.ACTIONS.REMOVE_STORAGE,
-          payload: { value: api.EXTENSION_NAME },
+          type: REMOVE_STORAGE,
+          payload: { key: EXTENSION_NAME },
         },
         {},
       );
 
-      expect(api.api.removeStorage).toHaveBeenCalledTimes(1);
-      expect(api.api.removeStorage).toHaveBeenCalledWith(api.EXTENSION_NAME);
+      expect(extApi.removeStorage).toHaveBeenCalledTimes(1);
+      expect(extApi.removeStorage).toHaveBeenCalledWith(EXTENSION_NAME);
+    });
+  });
+
+  describe('UPDATE_STORAGE', () => {
+    it('should call api.setStorage', async () => {
+      jest.spyOn(extApi, 'getStorage');
+      jest.spyOn(extApi, 'setStorage');
+
+      when(extApi.getStorage)
+        .calledWith(EXTENSION_NAME)
+        .mockResolvedValue({ [EXTENSION_NAME]: links });
+
+      await onMessageCallback(
+        {
+          type: UPDATE_STORAGE,
+          payload: { key: EXTENSION_NAME, value: { id: '456' } },
+        },
+        {},
+      );
+
+      expect(extApi.getStorage).toHaveBeenCalledTimes(1);
+      expect(extApi.getStorage).toHaveBeenCalledWith(EXTENSION_NAME);
+
+      expect(extApi.setStorage).toHaveBeenCalledTimes(1);
+      expect(extApi.setStorage).toHaveBeenCalledWith(EXTENSION_NAME, [
+        { id: '123' },
+        { id: '456' },
+      ]);
     });
   });
 });
