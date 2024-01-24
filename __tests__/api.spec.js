@@ -1,56 +1,56 @@
 import { when } from 'jest-when';
-import { api } from '../extension/api';
+import { api, EXTENSION_NAME, ACTIONS } from '../extension/api';
 import { chrome } from 'jest-chrome';
 
-const { setStorage, getStorage, sendMessage, onMessage, removeStorage } = api;
+const {
+  setStorage,
+  getStorage,
+  sendMessage,
+  onMessage,
+  removeStorage,
+  onInstalled,
+  updateStorage,
+} = api;
 
 const links = [{ id: '123' }];
-const linksStorage = { links };
+const linksStorage = { [EXTENSION_NAME]: links };
 
 describe('api', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     when(chrome.storage.local.get)
-      .calledWith('links')
+      .calledWith(EXTENSION_NAME)
       .mockResolvedValue(linksStorage);
   });
 
   describe('setStorage', () => {
-    it('should be defined', () => {
-      expect(setStorage).toBeInstanceOf(Function);
-    });
-
     it('should call chrome.storage.local.set', async () => {
-      await setStorage('links', links);
+      await setStorage(EXTENSION_NAME, links);
 
       expect(chrome.storage.local.set).toHaveBeenCalledTimes(1);
       expect(chrome.storage.local.set).toHaveBeenCalledWith(linksStorage);
     });
 
     it('should set the sync storage', async () => {
-      await setStorage('links', links);
+      await setStorage(EXTENSION_NAME, links);
 
-      await expect(chrome.storage.local.get('links')).resolves.toEqual(
+      await expect(chrome.storage.local.get(EXTENSION_NAME)).resolves.toEqual(
         linksStorage,
       );
     });
   });
 
   describe('getStorage', () => {
-    it('should be defined', () => {
-      expect(getStorage).toBeInstanceOf(Function);
-    });
-
     it('should call chrome.storage.local.get', async () => {
-      await getStorage('links');
+      await getStorage(EXTENSION_NAME);
 
       expect(chrome.storage.local.get).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.get).toHaveBeenCalledWith('links');
+      expect(chrome.storage.local.get).toHaveBeenCalledWith(EXTENSION_NAME);
     });
 
     it('should get the storage for the given key, "links"', async () => {
-      await expect(getStorage('links')).resolves.toEqual(linksStorage);
+      await expect(getStorage(EXTENSION_NAME)).resolves.toEqual(linksStorage);
     });
 
     it('should get the storage for the given key, "crabs"', async () => {
@@ -59,36 +59,28 @@ describe('api', () => {
   });
 
   describe('sendMessage', () => {
-    it('should be defined', () => {
-      expect(sendMessage).toBeInstanceOf(Function);
-    });
-
     it('should call chrome.runtime.sendMessage', async () => {
       await sendMessage({
-        type: 'SET_STORAGE',
+        type: ACTIONS.SET_STORAGE,
         payload: [],
       });
 
       expect(chrome.runtime.sendMessage).toHaveBeenCalledTimes(1);
       expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
-        type: 'SET_STORAGE',
+        type: ACTIONS.SET_STORAGE,
         payload: [],
       });
     });
   });
 
   describe('onMessage', () => {
-    it('should be defined', () => {
-      expect(onMessage).toBeInstanceOf(Function);
-    });
-
     it('should call chrome.runtime.onMessage', () => {
       const listenerSpy = jest.fn();
       const sendResponseSpy = jest.fn();
 
       onMessage(listenerSpy);
 
-      expect(listenerSpy).not.toBeCalled();
+      expect(listenerSpy).not.toHaveBeenCalled();
       expect(chrome.runtime.onMessage.hasListeners()).toBe(true);
 
       chrome.runtime.onMessage.callListeners(
@@ -107,15 +99,40 @@ describe('api', () => {
   });
 
   describe('removeStorage', () => {
-    it('should be defined', () => {
-      expect(removeStorage).toBeInstanceOf(Function);
-    });
-
     it('should call chrome.storage.sync.remove', async () => {
-      await removeStorage('links');
+      await removeStorage(EXTENSION_NAME);
 
       expect(chrome.storage.sync.remove).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.sync.remove).toHaveBeenCalledWith('links');
+      expect(chrome.storage.sync.remove).toHaveBeenCalledWith(EXTENSION_NAME);
+    });
+  });
+
+  describe('onInstalled', () => {
+    it('should call chrome.runtime.onInstalled', async () => {
+      const listenerSpy = jest.fn();
+
+      onInstalled(listenerSpy);
+
+      expect(listenerSpy).not.toHaveBeenCalled();
+      expect(chrome.runtime.onInstalled.hasListeners()).toBe(true);
+
+      chrome.runtime.onInstalled.callListeners({ reason: 'install' });
+
+      expect(listenerSpy).toHaveBeenCalledWith({ reason: 'install' });
+    });
+  });
+
+  describe('updateStorage', () => {
+    it('should call chrome.storage.sync.remove', async () => {
+      await updateStorage(EXTENSION_NAME, { id: '456' });
+
+      expect(chrome.storage.local.get).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.local.get).toHaveBeenCalledWith(EXTENSION_NAME);
+
+      expect(chrome.storage.local.set).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.local.set).toHaveBeenCalledWith({
+        [EXTENSION_NAME]: [{ id: '123' }, { id: '456' }],
+      });
     });
   });
 });

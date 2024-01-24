@@ -22,10 +22,14 @@ type OnMsgCallback = (
   sendResponse: (response: unknown) => void
 ) => void;
 
+type OnInstalledCallback = (details: chrome.runtime.InstalledDetails) => void;
+
 interface API {
   getStorage: (key: APIKey) => Promise<{[key in APIKey]: VisitedLink[]}>;
   setStorage: (key: APIKey, values: VisitedLink[]) => Promise<void>;
   sendMessage: <T>({type, payload}: SendMsgParams) => Promise<T>
   onMessage: (callback: OnMsgCallback) => void;
   removeStorage: (key: APIKey) => Promise<void>;
+  onInstalled: (callback: OnInstalledCallback) => void;
+  updateStorage: (key: APIKey, value: VisitedLink) => Promise<void>;
 }

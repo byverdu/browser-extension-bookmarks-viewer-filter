@@ -6,6 +6,7 @@ jest.mock('../extension/api');
 
 const sendResponse = jest.fn();
 const onMessageCallback = utilsRewire.__get__('onMessageCallback');
+const onInstalledCallback = utilsRewire.__get__('onInstalledCallback');
 const links = [{ id: '123' }];
 const {
   api: extApi,
@@ -17,7 +18,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('onMessage', () => {
+describe('onMessageCallback', () => {
   it('should call console.info if message.type is not defined', () => {
     jest.spyOn(console, 'info');
     onMessageCallback({}, {});
@@ -89,12 +90,7 @@ describe('onMessage', () => {
 
   describe('UPDATE_STORAGE', () => {
     it('should call api.setStorage', async () => {
-      jest.spyOn(extApi, 'getStorage');
-      jest.spyOn(extApi, 'setStorage');
-
-      when(extApi.getStorage)
-        .calledWith(EXTENSION_NAME)
-        .mockResolvedValue({ [EXTENSION_NAME]: links });
+      jest.spyOn(extApi, 'updateStorage');
 
       await onMessageCallback(
         {
@@ -104,14 +100,28 @@ describe('onMessage', () => {
         {},
       );
 
-      expect(extApi.getStorage).toHaveBeenCalledTimes(1);
-      expect(extApi.getStorage).toHaveBeenCalledWith(EXTENSION_NAME);
-
-      expect(extApi.setStorage).toHaveBeenCalledTimes(1);
-      expect(extApi.setStorage).toHaveBeenCalledWith(EXTENSION_NAME, [
-        { id: '123' },
-        { id: '456' },
-      ]);
+      expect(extApi.updateStorage).toHaveBeenCalledTimes(1);
+      expect(extApi.updateStorage).toHaveBeenCalledWith(EXTENSION_NAME, {
+        id: '456',
+      });
     });
+  });
+});
+
+describe('onInstalledCallback', () => {
+  it('should call setStorage if the details reason is "install"', () => {
+    jest.spyOn(extApi, 'setStorage');
+
+    onInstalledCallback({ reason: 'install' });
+
+    expect(extApi.setStorage).toHaveBeenCalledTimes(1);
+    expect(extApi.setStorage).toHaveBeenCalledWith(EXTENSION_NAME, []);
+  });
+  it('should not call setStorage if the details reason is different than "install"', () => {
+    jest.spyOn(extApi, 'setStorage');
+
+    onInstalledCallback({ reason: 'update' });
+
+    expect(extApi.setStorage).toHaveBeenCalledTimes(0);
   });
 });

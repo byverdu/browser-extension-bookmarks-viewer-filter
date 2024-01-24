@@ -1,6 +1,7 @@
 /**
  * @type {API}
  */ const api = {
+  onInstalled: callback => chrome.runtime.onInstalled.addListener(callback),
   getStorage: async key => chrome.storage.local.get(key),
   setStorage: async (key, values) =>
     chrome.storage.local.set({ [key]: values }),
@@ -11,6 +12,12 @@
     }),
   onMessage: callback => chrome.runtime.onMessage.addListener(callback),
   removeStorage: async key => await chrome.storage.sync.remove(key),
+  updateStorage: async (key, value) => {
+    const { [key]: savedLinks } = await chrome.storage.local.get(key);
+    const newLinks = [...savedLinks, value];
+
+    await chrome.storage.local.set({ [key]: newLinks });
+  },
 };
 
 const EXTENSION_NAME = 'VisitedLinks';

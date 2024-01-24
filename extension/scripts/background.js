@@ -1,9 +1,16 @@
-import { api, ACTIONS } from '../api/index.js';
+import { api, ACTIONS, EXTENSION_NAME } from '../api/index.js';
 
 /**
  * @type {API}
  */
-const { onMessage, getStorage, setStorage, removeStorage } = api;
+const {
+  onMessage,
+  getStorage,
+  setStorage,
+  removeStorage,
+  onInstalled,
+  updateStorage,
+} = api;
 
 const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE } = ACTIONS;
 
@@ -37,18 +44,11 @@ async function removeStorageAsync(key) {
  * @param {VisitedLink} value
  */
 async function updateStorageAsync(key, value) {
-  const { [key]: items } = await getStorage(key);
-  const newLinks = [...items, value];
-  console.log(newLinks);
-  await setStorage(key, newLinks);
+  await updateStorage(key, value);
 }
 
 /**
- *
- * @param {SendMsgParams} msg
- * @param {chrome.runtime.MessageSender} sender
- * @param {(response: unknown) => void} sendResponse
- * @returns void
+ * @type {OnMsgCallback}
  */
 function onMessageCallback(msg, sender, sendResponse) {
   if (sender && msg && msg.type) {
@@ -91,5 +91,14 @@ function onMessageCallback(msg, sender, sendResponse) {
     console.info('No messages found');
   }
 }
+/**
+ * @type {OnInstalledCallback}
+ */
+function onInstalledCallback(details) {
+  if (details.reason === 'install') {
+    setStorage(EXTENSION_NAME, []);
+  }
+}
 
 onMessage(onMessageCallback);
+onInstalled(onInstalledCallback);
