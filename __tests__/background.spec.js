@@ -120,7 +120,7 @@ describe('onInstalledCallback', () => {
   it('should not call setStorage if the details reason is different than "install"', () => {
     jest.spyOn(extApi, 'setStorage');
 
-    onInstalledCallback({ reason: 'update' });
+    onInstalledCallback({ reason: 'chrome_update' });
 
     expect(extApi.setStorage).toHaveBeenCalledTimes(0);
   });

@@ -1,9 +1,9 @@
 type APIKey = 'VisitedLinks'
 type Actions = 'GET_STORAGE' | 'SET_STORAGE'
 type VisitedLink = {
-    url: string
-    title: string
-    date: number
+  url: string
+  title: string
+  date: number
 }
 
 type Payload<T> = {
