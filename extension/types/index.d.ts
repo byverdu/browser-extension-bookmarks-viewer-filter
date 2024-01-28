@@ -1,5 +1,5 @@
 type APIKey = 'VisitedLinks'
-type Actions = 'GET_STORAGE' | 'SET_STORAGE'
+type Actions = 'GET_STORAGE' | 'SET_STORAGE' | 'REMOVE_STORAGE' | 'UPDATE_STORAGE'
 type VisitedLink = {
   url: string
   title: string

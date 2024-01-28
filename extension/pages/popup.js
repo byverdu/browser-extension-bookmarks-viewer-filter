@@ -1,5 +1,5 @@
 import { api, EXTENSION_NAME } from '../api/index.js';
-import { renderer } from '../utils/DOMHelpers.js';
+import { renderer } from '../utils/index.js';
 
 /**
  *

@@ -98,6 +98,9 @@ function onInstalledCallback(details) {
   if (details.reason === 'install') {
     setStorage(EXTENSION_NAME, []);
   }
+  if (details.reason === 'update') {
+    setStorage(EXTENSION_NAME, []);
+  }
 }
 
 onMessage(onMessageCallback);

@@ -65,4 +65,15 @@ describe('init', () => {
       `<div id="root">${savedLinksHtml}</div>`,
     );
   });
+  it('should console any errors', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    when(extApi.getStorage)
+      .calledWith(EXTENSION_NAME)
+      .mockRejectedValue('error');
+
+    await init();
+
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledWith('error');
+  });
 });
