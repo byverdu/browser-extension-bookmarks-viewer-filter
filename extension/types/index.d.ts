@@ -24,6 +24,14 @@ type OnMsgCallback = (
 
 type OnInstalledCallback = (details: chrome.runtime.InstalledDetails) => void;
 
+type OnclickContextMenu =  (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => void;
+
+type ContextMenu = {
+  id: string;
+  title: string;
+  contexts: chrome.contextMenus.ContextType[];
+}
+
 interface API {
   getStorage: (key: APIKey) => Promise<{[key in APIKey]: VisitedLink[]}>;
   setStorage: (key: APIKey, values: VisitedLink[]) => Promise<void>;
@@ -32,4 +40,6 @@ interface API {
   removeStorage: (key: APIKey) => Promise<void>;
   onInstalled: (callback: OnInstalledCallback) => void;
   updateStorage: (key: APIKey, value: VisitedLink) => Promise<void>;
+  createContextMenu: (props: ContextMenu) => void;
+  contextMenuOnClick: (callback: OnclickContextMenu) => void;
 }

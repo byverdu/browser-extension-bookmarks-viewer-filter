@@ -10,6 +10,8 @@ const {
   removeStorage,
   onInstalled,
   updateStorage,
+  createContextMenu,
+  contextMenuOnClick,
 } = api;
 
 const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE } = ACTIONS;
@@ -91,6 +93,17 @@ function onMessageCallback(msg, sender, sendResponse) {
     console.info('No messages found');
   }
 }
+
+/**
+ * @type OnclickContextMenu
+ */
+async function onclickContextMenu({ linkUrl: url, selectionText: title }) {
+  const date = new Date().getTime();
+  const newLink = { date, title, url };
+
+  await updateStorageAsync(EXTENSION_NAME, newLink);
+}
+
 /**
  * @type {OnInstalledCallback}
  */
@@ -101,6 +114,14 @@ function onInstalledCallback(details) {
   if (details.reason === 'update') {
     setStorage(EXTENSION_NAME, []);
   }
+
+  createContextMenu({
+    title: 'Save link?',
+    contexts: ['link'],
+    id: EXTENSION_NAME,
+  });
+
+  contextMenuOnClick(onclickContextMenu);
 }
 
 onMessage(onMessageCallback);

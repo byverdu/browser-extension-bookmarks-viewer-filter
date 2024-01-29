@@ -18,6 +18,17 @@
 
     await chrome.storage.local.set({ [key]: newLinks });
   },
+  createContextMenu: ({ title, contexts, id }) => {
+    chrome.contextMenus.create({
+      id,
+      title,
+      contexts,
+    });
+  },
+  //Extensions using event pages or Service Workers cannot pass an onclick parameter to chrome.contextMenus.create.
+  // Instead, use the chrome.contextMenus.onClicked event.
+  contextMenuOnClick: callback =>
+    chrome.contextMenus.onClicked.addListener(callback),
 };
 
 const EXTENSION_NAME = 'VisitedLinks';

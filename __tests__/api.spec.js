@@ -135,4 +135,36 @@ describe('api', () => {
       });
     });
   });
+
+  describe('createContextMenu', () => {
+    it('should call chrome.contextMenus.create', () => {
+      const title = 'some title';
+      const contexts = ['page'];
+      const id = 'some_id';
+
+      api.createContextMenu({ title, onclick, contexts, id });
+
+      expect(chrome.contextMenus.create).toHaveBeenCalledTimes(1);
+      expect(chrome.contextMenus.create).toHaveBeenCalledWith({
+        id,
+        title,
+        contexts,
+      });
+    });
+  });
+
+  describe('contextMenuOnClick', () => {
+    it('should call chrome.contextMenus.onClicked', () => {
+      const listenerSpy = jest.fn();
+
+      api.contextMenuOnClick(listenerSpy);
+
+      expect(listenerSpy).not.toHaveBeenCalled();
+      expect(chrome.contextMenus.onClicked.hasListeners()).toBe(true);
+
+      chrome.contextMenus.onClicked.callListeners();
+
+      expect(listenerSpy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
