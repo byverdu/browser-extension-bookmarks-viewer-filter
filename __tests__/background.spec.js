@@ -13,6 +13,7 @@ const {
   api: extApi,
   ACTIONS: { SET_STORAGE, GET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE },
   EXTENSION_NAME,
+  EXTENSION_OPTIONS,
 } = api;
 
 beforeEach(() => {
@@ -115,8 +116,11 @@ describe('onInstalledCallback', () => {
 
     onInstalledCallback({ reason: 'install' });
 
-    expect(extApi.setStorage).toHaveBeenCalledTimes(1);
-    expect(extApi.setStorage).toHaveBeenCalledWith(EXTENSION_NAME, []);
+    expect(extApi.setStorage).toHaveBeenCalledTimes(2);
+    expect(extApi.setStorage).toHaveBeenNthCalledWith(1, EXTENSION_NAME, []);
+    expect(extApi.setStorage).toHaveBeenNthCalledWith(2, EXTENSION_OPTIONS, {
+      sort: 'asc',
+    });
   });
   it('should not call setStorage if the details reason is different than "install"', () => {
     jest.spyOn(extApi, 'setStorage');

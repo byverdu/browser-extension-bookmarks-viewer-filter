@@ -1,4 +1,9 @@
-import { api, ACTIONS, EXTENSION_NAME } from '../api/index.js';
+import {
+  api,
+  ACTIONS,
+  EXTENSION_NAME,
+  EXTENSION_OPTIONS,
+} from '../api/index.js';
 
 /**
  * @type {API}
@@ -110,9 +115,11 @@ async function onclickContextMenu({ linkUrl: url, selectionText: title }) {
 function onInstalledCallback(details) {
   if (details.reason === 'install') {
     setStorage(EXTENSION_NAME, []);
+    setStorage(EXTENSION_OPTIONS, { sort: 'asc' });
   }
   if (details.reason === 'update') {
     setStorage(EXTENSION_NAME, []);
+    setStorage(EXTENSION_OPTIONS, { sort: 'asc' });
   }
 
   createContextMenu({

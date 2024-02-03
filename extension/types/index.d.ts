@@ -1,9 +1,14 @@
 type APIKey = 'VisitedLinks'
+type APIKeyOptions = 'VisitedLinksOptions'
 type Actions = 'GET_STORAGE' | 'SET_STORAGE' | 'REMOVE_STORAGE' | 'UPDATE_STORAGE'
 type VisitedLink = {
   url: string
   title: string
   date: number
+}
+
+type Options = {
+  sort: 'asc' | 'desc';
 }
 
 type Payload<T> = {
@@ -33,8 +38,8 @@ type ContextMenu = {
 }
 
 interface API {
-  getStorage: (key: APIKey) => Promise<{[key in APIKey]: VisitedLink[]}>;
-  setStorage: (key: APIKey, values: VisitedLink[]) => Promise<void>;
+  getStorage: (key: APIKey) => Promise<{[key in APIKey]: VisitedLink[]} | {[key in APIKeyOptions]: Options}>;
+  setStorage: (key: APIKey, values: VisitedLink[] | Options) => Promise<void>;
   sendMessage: <T>({type, payload}: SendMsgParams) => Promise<T>
   onMessage: (callback: OnMsgCallback) => void;
   removeStorage: (key: APIKey) => Promise<void>;

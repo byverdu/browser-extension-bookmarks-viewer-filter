@@ -8,7 +8,7 @@ const fetchStorage = utilsRewire.__get__('fetchStorage');
 const listBuilder = utilsRewire.__get__('listBuilder');
 const init = utilsRewire.__get__('init');
 const links = [{ title: 'some link', link: 'some_link', date: 0 }];
-const { api: extApi, EXTENSION_NAME } = api;
+const { api: extApi, EXTENSION_NAME, EXTENSION_OPTIONS } = api;
 const emptyLinkHtml = '<ul><li>No links saved</li></ul>';
 const savedLinksHtml =
   '<ul><li><a href="some_link">some link</a> visited on Thu, 01 Jan 1970 00:00:00 GMT</li></ul>';
@@ -47,6 +47,9 @@ describe('init', () => {
     when(extApi.getStorage)
       .calledWith(EXTENSION_NAME)
       .mockResolvedValue({ [EXTENSION_NAME]: [] });
+    when(extApi.getStorage)
+      .calledWith(EXTENSION_OPTIONS)
+      .mockResolvedValue({ [EXTENSION_OPTIONS]: { sort: 'asc' } });
 
     await init();
 

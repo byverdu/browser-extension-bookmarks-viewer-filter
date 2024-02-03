@@ -32,6 +32,7 @@
 };
 
 const EXTENSION_NAME = 'VisitedLinks';
+const EXTENSION_OPTIONS = 'VisitedLinksOptions';
 const ACTIONS = {
   GET_STORAGE: 'GET_STORAGE',
   SET_STORAGE: 'SET_STORAGE',
@@ -39,4 +40,4 @@ const ACTIONS = {
   UPDATE_STORAGE: 'UPDATE_STORAGE',
 };
 
-export { api, EXTENSION_NAME, ACTIONS };
+export { api, EXTENSION_NAME, ACTIONS, EXTENSION_OPTIONS };

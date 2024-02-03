@@ -18,6 +18,7 @@
     },
     "default_popup": "pages/popup.html"
   },
+  "options_page": "pages/options.html",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

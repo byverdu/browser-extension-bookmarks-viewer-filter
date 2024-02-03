@@ -1,25 +1,44 @@
-import { api, EXTENSION_NAME } from '../api/index.js';
+import { api, EXTENSION_NAME, EXTENSION_OPTIONS } from '../api/index.js';
 import { renderer } from '../utils/index.js';
 
 /**
- *
+ * @type {API}
+ **/
+const { getStorage } = api;
+
+/**
  * @returns {VisitedLink[]}
  */
 async function fetchStorage() {
-  const { [EXTENSION_NAME]: savedLinks } = await api.getStorage(EXTENSION_NAME);
+  const { [EXTENSION_NAME]: savedLinks } = await getStorage(EXTENSION_NAME);
 
   return savedLinks;
 }
 
 /**
- * @param {VisitedLink[]} savedLinks
+ * @returns {Options}
  */
-function listBuilder(savedLinks) {
+async function getOptions() {
+  const {
+    [EXTENSION_OPTIONS]: { sort },
+  } = await getStorage(EXTENSION_OPTIONS);
+
+  return sort;
+}
+
+/**
+ * @param {VisitedLink[]} savedLinks
+ * @param {'asc' | 'desc'} sortOrder
+ */
+function listBuilder(savedLinks, sortOrder) {
   const emptyLink = '<li>No links saved</li>';
+  const sortCallback = (a, b) =>
+    sortOrder === 'asc' ? a.date - b.date : b.date - a.date;
 
   return `<ul>${
     savedLinks.length
       ? savedLinks
+          .sort(sortCallback)
           .map(
             ({ title, link, date }) =>
               `<li><a href="${link}">${title}</a> visited on ${new Date(
@@ -33,8 +52,10 @@ function listBuilder(savedLinks) {
 
 async function init() {
   try {
-    const data = await fetchStorage();
-    const html = listBuilder(data);
+    const savedLinks = await fetchStorage();
+    const sortOrder = await getOptions();
+    const html = listBuilder(savedLinks, sortOrder);
+
     renderer(html);
   } catch (e) {
     console.error(e);
