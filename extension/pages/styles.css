@@ -33,16 +33,15 @@
   }
 
   ul {
-    padding: 16px;
+    padding-top: 16px;
     margin: 0;
   }
 
   .optionsPage {
     height: 100vh;
     display: flex;
-  } 
+  }
 
-
-  .optionsPage div:first-child {
-    padding: 32px
-  } 
+  .popupPage h1 {
+    margin-bottom: 0;
+  }

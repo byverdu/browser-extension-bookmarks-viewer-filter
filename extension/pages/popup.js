@@ -26,35 +26,40 @@ async function getOptions() {
   return sort;
 }
 
+function contentBuilder(content) {
+  return `<div><h1>Saved Links</h1><ul class="mui-list--unstyled">${content}</ul></div>`;
+}
+
 /**
  * @param {VisitedLink[]} savedLinks
  * @param {'asc' | 'desc'} sortOrder
  */
-function listBuilder(savedLinks, sortOrder) {
+function listItemBuilder(savedLinks, sortOrder) {
   const emptyLink = '<li>No links saved</li>';
   const sortCallback = (a, b) =>
     sortOrder === 'asc' ? a.date - b.date : b.date - a.date;
 
-  return `<ul>${
+  return `${
     savedLinks.length
       ? savedLinks
           .sort(sortCallback)
           .map(
             ({ title, link, date }) =>
-              `<li><a href="${link}">${title}</a> visited on ${new Date(
+              `<li style="padding: 4px;"><a href="${link}">${title}</a> visited on ${new Date(
                 date,
               ).toUTCString()}</li>`,
           )
           .join('')
       : emptyLink
-  }</ul>`;
+  }`;
 }
 
 async function init() {
   try {
     const savedLinks = await fetchStorage();
     const sortOrder = await getOptions();
-    const html = listBuilder(savedLinks, sortOrder);
+    const liContent = listItemBuilder(savedLinks, sortOrder);
+    const html = contentBuilder(liContent);
 
     renderer(html);
   } catch (e) {

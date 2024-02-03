@@ -33,23 +33,25 @@ async function handleOptionsChange(event) {
   await setOptions({ sort: value });
 }
 
+function contentBuilder(content) {
+  return `<div><h1>Options</h1><form><fieldset><legend class="mui--text-light-secondary">Choose sorting order</legend>${content}</fieldset></form></div>`;
+}
+
 /**
  * @param {'asc' | 'desc'} option
  */
 function buildOptions(savedOption) {
   const options = ['asc', 'desc'].map(
     option =>
-      `<div>
-        <label for="${option}">${option}</label>
+      `<div class="mui-checkbox">
         <input id="${option}" type="radio" name="sort" value="${option}" ${
           savedOption === option ? 'checked' : ''
         } />
+        <label for="${option}">${option}</label>
       </div>`,
   );
 
-  return `<div><h1>Options</h1><fieldset><legend>Choose sorting order</legend>${options.join(
-    '',
-  )}</fieldset></div>`;
+  return contentBuilder(options.join(''));
 }
 
 async function init() {
