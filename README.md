@@ -48,8 +48,8 @@ extension
 
 ## What the VisitedLinks extension does?
 
-- Options page to select the ascending or descending order of the visited links
-- Save on local storage the links visited by the user
+- Options page to select the ascending or descending order of the visited links.
+- Save on local storage the links visited by the user.
   - Properties: `url`, `title`, `date`
-- Display the visited links on the Popup page sorted by the selected order
-- ContextMenu to save a selected link as visited
+- Display the visited links on the Popup page sorted by `date` from the selected order.
+- ContextMenu to save a selected link as visited.
