@@ -25,7 +25,7 @@
     }
   },
   "keywords": [],
-  "author": "",
+  "author": "Albert Vallverdu<@byverdu>",
   "license": "ISC",
   "devDependencies": {
     "@babel/preset-env": "^7.23.7",
