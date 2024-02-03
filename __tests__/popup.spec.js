@@ -5,13 +5,13 @@ import utilsRewire from '../extension/pages/popup.js';
 jest.mock('../extension/api');
 
 const fetchStorage = utilsRewire.__get__('fetchStorage');
-const listBuilder = utilsRewire.__get__('listBuilder');
+const listItemBuilder = utilsRewire.__get__('listItemBuilder');
 const init = utilsRewire.__get__('init');
 const links = [{ title: 'some link', link: 'some_link', date: 0 }];
 const { api: extApi, EXTENSION_NAME, EXTENSION_OPTIONS } = api;
-const emptyLinkHtml = '<ul><li>No links saved</li></ul>';
+const emptyLinkHtml = '<li>No links saved</li>';
 const savedLinksHtml =
-  '<ul><li><a href="some_link">some link</a> visited on Thu, 01 Jan 1970 00:00:00 GMT</li></ul>';
+  '<li style="padding: 4px;"><a href="some_link">some link</a> visited on Thu, 01 Jan 1970 00:00:00 GMT</li>';
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -31,12 +31,12 @@ describe('fetchStorage', () => {
   });
 });
 
-describe('listBuilder', () => {
+describe('listItemBuilder', () => {
   it('should handle empty links', () => {
-    expect(listBuilder([])).toEqual(emptyLinkHtml);
+    expect(listItemBuilder([])).toEqual(emptyLinkHtml);
   });
   it('should return html for saved links', () => {
-    expect(listBuilder(links)).toEqual(savedLinksHtml);
+    expect(listItemBuilder(links)).toEqual(savedLinksHtml);
   });
 });
 
@@ -54,7 +54,9 @@ describe('init', () => {
     await init();
 
     expect(document.body.innerHTML).toEqual(
-      `<div id="root">${emptyLinkHtml}</div>`,
+      `<div id="root">${utilsRewire.__get__('contentBuilder')(
+        emptyLinkHtml,
+      )}</div>`,
     );
   });
   it('should return html for saved links', async () => {
@@ -65,7 +67,9 @@ describe('init', () => {
     await init();
 
     expect(document.body.innerHTML).toEqual(
-      `<div id="root">${savedLinksHtml}</div>`,
+      `<div id="root">${utilsRewire.__get__('contentBuilder')(
+        savedLinksHtml,
+      )}</div>`,
     );
   });
   it('should console any errors', async () => {
