@@ -127,9 +127,8 @@ function onInstalledCallback(details) {
     contexts: ['link'],
     id: EXTENSION_NAME,
   });
-
-  contextMenuOnClick(onclickContextMenu);
 }
 
+contextMenuOnClick(onclickContextMenu);
 onMessage(onMessageCallback);
 onInstalled(onInstalledCallback);
