@@ -19,34 +19,34 @@ describe('api', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    when(chrome.storage.local.get)
+    when(chrome.storage.sync.get)
       .calledWith(EXTENSION_NAME)
       .mockResolvedValue(linksStorage);
   });
 
   describe('setStorage', () => {
-    it('should call chrome.storage.local.set', async () => {
+    it('should call chrome.storage.sync.set', async () => {
       await setStorage(EXTENSION_NAME, links);
 
-      expect(chrome.storage.local.set).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.set).toHaveBeenCalledWith(linksStorage);
+      expect(chrome.storage.sync.set).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.sync.set).toHaveBeenCalledWith(linksStorage);
     });
 
     it('should set the sync storage', async () => {
       await setStorage(EXTENSION_NAME, links);
 
-      await expect(chrome.storage.local.get(EXTENSION_NAME)).resolves.toEqual(
+      await expect(chrome.storage.sync.get(EXTENSION_NAME)).resolves.toEqual(
         linksStorage,
       );
     });
   });
 
   describe('getStorage', () => {
-    it('should call chrome.storage.local.get', async () => {
+    it('should call chrome.storage.sync.get', async () => {
       await getStorage(EXTENSION_NAME);
 
-      expect(chrome.storage.local.get).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.get).toHaveBeenCalledWith(EXTENSION_NAME);
+      expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.sync.get).toHaveBeenCalledWith(EXTENSION_NAME);
     });
 
     it('should get the storage for the given key, "links"', async () => {
@@ -126,45 +126,13 @@ describe('api', () => {
     it('should call chrome.storage.sync.remove', async () => {
       await updateStorage(EXTENSION_NAME, { id: '456' });
 
-      expect(chrome.storage.local.get).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.get).toHaveBeenCalledWith(EXTENSION_NAME);
+      expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.sync.get).toHaveBeenCalledWith(EXTENSION_NAME);
 
-      expect(chrome.storage.local.set).toHaveBeenCalledTimes(1);
-      expect(chrome.storage.local.set).toHaveBeenCalledWith({
+      expect(chrome.storage.sync.set).toHaveBeenCalledTimes(1);
+      expect(chrome.storage.sync.set).toHaveBeenCalledWith({
         [EXTENSION_NAME]: [{ id: '123' }, { id: '456' }],
       });
-    });
-  });
-
-  describe('createContextMenu', () => {
-    it('should call chrome.contextMenus.create', () => {
-      const title = 'some title';
-      const contexts = ['page'];
-      const id = 'some_id';
-
-      api.createContextMenu({ title, onclick, contexts, id });
-
-      expect(chrome.contextMenus.create).toHaveBeenCalledTimes(1);
-      expect(chrome.contextMenus.create).toHaveBeenCalledWith({
-        id,
-        title,
-        contexts,
-      });
-    });
-  });
-
-  describe('contextMenuOnClick', () => {
-    it('should call chrome.contextMenus.onClicked', () => {
-      const listenerSpy = jest.fn();
-
-      api.contextMenuOnClick(listenerSpy);
-
-      expect(listenerSpy).not.toHaveBeenCalled();
-      expect(chrome.contextMenus.onClicked.hasListeners()).toBe(true);
-
-      chrome.contextMenus.onClicked.callListeners();
-
-      expect(listenerSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

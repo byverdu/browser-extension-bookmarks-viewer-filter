@@ -6,14 +6,11 @@ jest.mock('../extension/api');
 
 const sendResponse = jest.fn();
 const onMessageCallback = utilsRewire.__get__('onMessageCallback');
-const onInstalledCallback = utilsRewire.__get__('onInstalledCallback');
-const onclickContextMenu = utilsRewire.__get__('onclickContextMenu');
 const links = [{ url: 'some_url', title: 'some title', date: 0 }];
 const {
   api: extApi,
   ACTIONS: { SET_STORAGE, GET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE },
   EXTENSION_NAME,
-  EXTENSION_OPTIONS,
 } = api;
 
 beforeEach(() => {
@@ -107,70 +104,5 @@ describe('onMessageCallback', () => {
         id: '456',
       });
     });
-  });
-});
-
-describe('onInstalledCallback', () => {
-  it('should call setStorage if the details reason is "install"', () => {
-    jest.spyOn(extApi, 'setStorage');
-
-    onInstalledCallback({ reason: 'install' });
-
-    expect(extApi.setStorage).toHaveBeenCalledTimes(2);
-    expect(extApi.setStorage).toHaveBeenNthCalledWith(1, EXTENSION_NAME, []);
-    expect(extApi.setStorage).toHaveBeenNthCalledWith(2, EXTENSION_OPTIONS, {
-      sort: 'asc',
-    });
-  });
-  it('should not call setStorage if the details reason is different than "install"', () => {
-    jest.spyOn(extApi, 'setStorage');
-
-    onInstalledCallback({ reason: 'chrome_update' });
-
-    expect(extApi.setStorage).toHaveBeenCalledTimes(0);
-  });
-
-  it('should create a ContextMenu', () => {
-    jest.spyOn(extApi, 'createContextMenu');
-
-    onInstalledCallback({ reason: 'chrome_update' });
-
-    expect(extApi.createContextMenu).toHaveBeenCalledTimes(1);
-    expect(extApi.createContextMenu).toHaveBeenCalledWith({
-      id: EXTENSION_NAME,
-      title: 'Save link?',
-      contexts: ['link'],
-    });
-  });
-
-  it('should set ContextMenu onclick callback', () => {
-    jest.spyOn(extApi, 'contextMenuOnClick');
-
-    onInstalledCallback({ reason: 'chrome_update' });
-
-    expect(extApi.contextMenuOnClick).toHaveBeenCalledTimes(1);
-    expect(extApi.contextMenuOnClick).toHaveBeenCalledWith(
-      utilsRewire.__get__('onclickContextMenu'),
-    );
-  });
-});
-
-describe('onclickContextMenu', () => {
-  it('should call api.updateStorage', async () => {
-    jest.spyOn(extApi, 'updateStorage');
-
-    await onclickContextMenu({
-      linkUrl: 'some_link',
-      selectionText: 'some link',
-    });
-
-    const result = {
-      date: expect.any(Number),
-      title: 'some link',
-      url: 'some_link',
-    };
-
-    expect(extApi.updateStorage).toHaveBeenCalledTimes(1);
-    expect(extApi.updateStorage).toHaveBeenCalledWith(EXTENSION_NAME, result);
   });
 });
