@@ -2,9 +2,8 @@
  * @type {API}
  */ const api = {
   onInstalled: callback => chrome.runtime.onInstalled.addListener(callback),
-  getStorage: async key => chrome.storage.local.get(key),
-  setStorage: async (key, values) =>
-    chrome.storage.local.set({ [key]: values }),
+  getStorage: async key => chrome.storage.sync.get(key),
+  setStorage: async (key, values) => chrome.storage.sync.set({ [key]: values }),
   sendMessage: async ({ type, payload }) =>
     await chrome.runtime.sendMessage({
       type,
@@ -13,26 +12,14 @@
   onMessage: callback => chrome.runtime.onMessage.addListener(callback),
   removeStorage: async key => await chrome.storage.sync.remove(key),
   updateStorage: async (key, value) => {
-    const { [key]: savedLinks } = await chrome.storage.local.get(key);
+    const { [key]: savedLinks } = await chrome.storage.sync.get(key);
     const newLinks = [...savedLinks, value];
 
-    await chrome.storage.local.set({ [key]: newLinks });
+    await chrome.storage.sync.set({ [key]: newLinks });
   },
-  createContextMenu: ({ title, contexts, id }) => {
-    chrome.contextMenus.create({
-      id,
-      title,
-      contexts,
-    });
-  },
-  //Extensions using event pages or Service Workers cannot pass an onclick parameter to chrome.contextMenus.create.
-  // Instead, use the chrome.contextMenus.onClicked event.
-  contextMenuOnClick: callback =>
-    chrome.contextMenus.onClicked.addListener(callback),
 };
 
-const EXTENSION_NAME = 'VisitedLinks';
-const EXTENSION_OPTIONS = 'VisitedLinksOptions';
+const EXTENSION_NAME = 'BookmarkViewerFilter';
 const ACTIONS = {
   GET_STORAGE: 'GET_STORAGE',
   SET_STORAGE: 'SET_STORAGE',
@@ -40,4 +27,4 @@ const ACTIONS = {
   UPDATE_STORAGE: 'UPDATE_STORAGE',
 };
 
-export { api, EXTENSION_NAME, ACTIONS, EXTENSION_OPTIONS };
+export { api, EXTENSION_NAME, ACTIONS };

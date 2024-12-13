@@ -1,15 +1,20 @@
-type APIKey = 'VisitedLinks'
-type APIKeyOptions = 'VisitedLinksOptions'
-type Actions = 'GET_STORAGE' | 'SET_STORAGE' | 'REMOVE_STORAGE' | 'UPDATE_STORAGE'
-type VisitedLink = {
-  url: string
-  title: string
-  date: number
+type APIKey = 'BookmarkViewerFilter'
+type FilterView = 'grid' | 'list'
+type FilterTime = '7' | '15' | '30' | '90' | '120' | '180' | 'custom'
+type BookmarkViewerFilter = {
+  search: string;
+  time: FilterTime;
+  view: FilterView;
 }
 
-type Options = {
-  sort: 'asc' | 'desc';
+
+type Bookmark = {
+  url: string;
+  title: string;
+  date: number;
 }
+
+type Actions = 'GET_STORAGE' | 'SET_STORAGE' | 'REMOVE_STORAGE' | 'UPDATE_STORAGE'
 
 type Payload<T> = {
   key: APIKey
@@ -29,22 +34,12 @@ type OnMsgCallback = (
 
 type OnInstalledCallback = (details: chrome.runtime.InstalledDetails) => void;
 
-type OnclickContextMenu =  (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => void;
-
-type ContextMenu = {
-  id: string;
-  title: string;
-  contexts: chrome.contextMenus.ContextType[];
-}
-
 interface API {
-  getStorage: (key: APIKey) => Promise<{[key in APIKey]: VisitedLink[]} | {[key in APIKeyOptions]: Options}>;
-  setStorage: (key: APIKey, values: VisitedLink[] | Options) => Promise<void>;
+  onInstalled: (callback: OnInstalledCallback) => void;
+  getStorage: (key: APIKey) => Promise<{[key in APIKey]: BookmarkViewerFilter[]}>;
+  setStorage: (key: APIKey, values: BookmarkViewerFilter[]) => Promise<void>;
   sendMessage: <T>({type, payload}: SendMsgParams) => Promise<T>
   onMessage: (callback: OnMsgCallback) => void;
   removeStorage: (key: APIKey) => Promise<void>;
-  onInstalled: (callback: OnInstalledCallback) => void;
-  updateStorage: (key: APIKey, value: VisitedLink) => Promise<void>;
-  createContextMenu: (props: ContextMenu) => void;
-  contextMenuOnClick: (callback: OnclickContextMenu) => void;
+  updateStorage: (key: APIKey, value: BookmarkViewerFilter) => Promise<void>;
 }

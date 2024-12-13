@@ -1,9 +1,4 @@
-import {
-  api,
-  ACTIONS,
-  EXTENSION_NAME,
-  EXTENSION_OPTIONS,
-} from '../api/index.js';
+import { api, ACTIONS } from '../api/index.js';
 
 /**
  * @type {API}
@@ -15,8 +10,6 @@ const {
   removeStorage,
   onInstalled,
   updateStorage,
-  createContextMenu,
-  contextMenuOnClick,
 } = api;
 
 const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE } = ACTIONS;
@@ -100,35 +93,15 @@ function onMessageCallback(msg, sender, sendResponse) {
 }
 
 /**
- * @type OnclickContextMenu
- */
-async function onclickContextMenu({ linkUrl: url, selectionText: title }) {
-  const date = new Date().getTime();
-  const newLink = { date, title, url };
-
-  await updateStorageAsync(EXTENSION_NAME, newLink);
-}
-
-/**
  * @type {OnInstalledCallback}
  */
-function onInstalledCallback(details) {
-  if (details.reason === 'install') {
-    setStorage(EXTENSION_NAME, []);
-    setStorage(EXTENSION_OPTIONS, { sort: 'asc' });
-  }
-  if (details.reason === 'update') {
-    setStorage(EXTENSION_NAME, []);
-    setStorage(EXTENSION_OPTIONS, { sort: 'asc' });
-  }
-
-  createContextMenu({
-    title: 'Save link?',
-    contexts: ['link'],
-    id: EXTENSION_NAME,
+function onInstalledCallback() {
+  chrome.action.onClicked.addListener(() => {
+    chrome.runtime.openOptionsPage();
   });
+
+  chrome.bookmarks.getTree().then(res => console.log(res));
 }
 
-contextMenuOnClick(onclickContextMenu);
 onMessage(onMessageCallback);
 onInstalled(onInstalledCallback);
