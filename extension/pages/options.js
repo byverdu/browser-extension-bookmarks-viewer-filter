@@ -1,8 +1,9 @@
 import { renderer } from '../utils/index.js';
+import { App } from '../components/index.js';
 
 async function init() {
   try {
-    renderer('<h1>Hello World</h1>');
+    renderer(App());
   } catch (e) {
     console.error(e);
   }
