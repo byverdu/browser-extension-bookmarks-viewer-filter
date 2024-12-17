@@ -5,7 +5,7 @@ import { api, ACTIONS } from '../api/index.js';
  */
 const { sendMessage } = api;
 
-const template = `
+const resultsTemplate = `
   <div class="column is-one-third">
     <div class="message is-info">
       <div class="message-body">
@@ -41,7 +41,7 @@ const searchBookmarkClickHandler = async (input, results) => {
       results.innerHTML = noResultsTemplate.replace('{{term}}', input.value);
     } else {
       const html = res.map(bookmark =>
-        template
+        resultsTemplate
           .replace('{{url}}', bookmark.url)
           .replace('{{title}}', bookmark.title)
           .replace('{{date}}', new Date(bookmark.date).toLocaleDateString()),
