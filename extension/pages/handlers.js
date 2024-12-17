@@ -56,6 +56,7 @@ const inputKeyUpHandler = (e, searchBookmark) => {
   if (e.key === 'Enter') {
     searchBookmark.click();
   }
+  searchBookmark.toggleAttribute('disabled', e.target.value.length === 0);
 };
 
 window.addEventListener('appRendered', () => {

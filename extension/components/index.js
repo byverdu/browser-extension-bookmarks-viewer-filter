@@ -19,7 +19,7 @@ function SearchBox() {
             <input id="search-bookmark-input" class="input" type="text" placeholder="Type a url, title or a search term" />
           </p>
           <p class="control">
-            <button type="button" id="search-bookmark-cta" class="button is-link">
+            <button type="button" disabled id="search-bookmark-cta" class="button is-link">
               <span class="icon">
                 <i class="fas fa-filter"></i>
               </span>
