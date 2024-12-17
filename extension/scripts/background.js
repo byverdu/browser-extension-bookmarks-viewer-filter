@@ -10,9 +10,17 @@ const {
   removeStorage,
   onInstalled,
   updateStorage,
+  searchBookmarks,
+  onPopupClickListener,
 } = api;
 
-const { GET_STORAGE, SET_STORAGE, REMOVE_STORAGE, UPDATE_STORAGE } = ACTIONS;
+const {
+  GET_STORAGE,
+  SET_STORAGE,
+  REMOVE_STORAGE,
+  UPDATE_STORAGE,
+  SEARCH_BOOKMARKS,
+} = ACTIONS;
 
 /**
  * @param {APIKey} key
@@ -45,6 +53,15 @@ async function removeStorageAsync(key) {
  */
 async function updateStorageAsync(key, value) {
   await updateStorage(key, value);
+}
+
+/**
+ * @param {(response: Bookmark[]) => void} sendResponse
+ * @param {string} query
+ */
+async function searchBookmarksAsync(sendResponse, query) {
+  const bookmarks = await searchBookmarks(query);
+  sendResponse(bookmarks);
 }
 
 /**
@@ -87,6 +104,15 @@ function onMessageCallback(msg, sender, sendResponse) {
 
       updateStorageAsync(key, value);
     }
+
+    if (msg.type === SEARCH_BOOKMARKS) {
+      /**
+       * @type {Payload<string>}
+       */
+      searchBookmarksAsync(sendResponse, msg.payload);
+
+      return true;
+    }
   } else {
     console.info('No messages found');
   }
@@ -96,11 +122,7 @@ function onMessageCallback(msg, sender, sendResponse) {
  * @type {OnInstalledCallback}
  */
 function onInstalledCallback() {
-  chrome.action.onClicked.addListener(() => {
-    chrome.runtime.openOptionsPage();
-  });
-
-  chrome.bookmarks.getTree().then(res => console.log(res));
+  onPopupClickListener();
 }
 
 onMessage(onMessageCallback);

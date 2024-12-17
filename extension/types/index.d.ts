@@ -7,14 +7,13 @@ type BookmarkViewerFilter = {
   view: FilterView;
 }
 
-
 type Bookmark = {
   url: string;
   title: string;
   date: number;
 }
 
-type Actions = 'GET_STORAGE' | 'SET_STORAGE' | 'REMOVE_STORAGE' | 'UPDATE_STORAGE'
+type Actions = 'GET_STORAGE' | 'SET_STORAGE' | 'REMOVE_STORAGE' | 'UPDATE_STORAGE' | 'SEARCH_BOOKMARKS'
 
 type Payload<T> = {
   key: APIKey
@@ -42,4 +41,6 @@ interface API {
   onMessage: (callback: OnMsgCallback) => void;
   removeStorage: (key: APIKey) => Promise<void>;
   updateStorage: (key: APIKey, value: BookmarkViewerFilter) => Promise<void>;
+  searchBookmarks: (query: string) => Promise<Bookmark[]>;
+  onPopupClickListener: () => void;
 }

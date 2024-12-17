@@ -1,12 +1,9 @@
 function Hero() {
   return `
-    <section class="hero is-small is-info">
+    <section class="hero is-small is-link">
       <div class="hero-body">
         <p class="title">
-          Bookmark Manager
-        </p>
-        <p class="subtitle">
-          Search and manage your bookmarks
+          Bookmarks Viewer-Filter
         </p>
       </div>
     </section>
@@ -19,14 +16,14 @@ function SearchBox() {
       <div class="column">
         <div class="field has-addons">
           <p class="control is-expanded">
-            <input class="input" type="text" placeholder="Enter a bookmarked url" />
+            <input id="search-bookmark-input" class="input" type="text" placeholder="Type a url, title or a search term" />
           </p>
           <p class="control">
-            <button class="button is-info">
+            <button type="button" id="search-bookmark-cta" class="button is-link">
               <span class="icon">
-                <i class="fas fa-search"></i>
+                <i class="fas fa-filter"></i>
               </span>
-              <span>Search</span>
+              <span>Filter</span>
             </button>
           </p>
         </div>
@@ -56,16 +53,7 @@ function SearchBox() {
 
 function Results() {
   return `
-    <div class="columns is-multiline">
-      <div class="column is-one-third">
-        <div class="card is-shadowless">
-          <div class="card-content">
-            <p class="title is-4">Bookmark Title</p>
-            <p class="subtitle is-6">bookmark.url.com</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="search-bookmark-results" class="columns is-flex is-flex-wrap-wrap"></div>
   `;
 }
 
@@ -73,8 +61,10 @@ export function App() {
   return `
     ${Hero()}
     <div class="container">
-      <section class="section">
+      <section class="section pb-4">
         ${SearchBox()}
+      </section>
+      <section class="section pt-4">
         ${Results()}
       </section>
     </div>

@@ -2,6 +2,10 @@
  * @type {API}
  */ const api = {
   onInstalled: callback => chrome.runtime.onInstalled.addListener(callback),
+  onPopupClickListener: () =>
+    chrome.action.onClicked.addListener(() => {
+      chrome.runtime.openOptionsPage();
+    }),
   getStorage: async key => chrome.storage.sync.get(key),
   setStorage: async (key, values) => chrome.storage.sync.set({ [key]: values }),
   sendMessage: async ({ type, payload }) =>
@@ -17,6 +21,16 @@
 
     await chrome.storage.sync.set({ [key]: newLinks });
   },
+  searchBookmarks: async query => {
+    const bookmarks = await chrome.bookmarks.search(query);
+    return bookmarks
+      .filter(bookmark => bookmark.title && bookmark.url && bookmark.dateAdded)
+      .map(bookmark => ({
+        url: bookmark.url,
+        title: bookmark.title,
+        date: bookmark.dateAdded,
+      }));
+  },
 };
 
 const EXTENSION_NAME = 'BookmarkViewerFilter';
@@ -25,6 +39,7 @@ const ACTIONS = {
   SET_STORAGE: 'SET_STORAGE',
   REMOVE_STORAGE: 'REMOVE_STORAGE',
   UPDATE_STORAGE: 'UPDATE_STORAGE',
+  SEARCH_BOOKMARKS: 'SEARCH_BOOKMARKS',
 };
 
 export { api, EXTENSION_NAME, ACTIONS };
