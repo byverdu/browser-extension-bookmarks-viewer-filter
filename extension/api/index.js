@@ -16,20 +16,31 @@
   onMessage: callback => chrome.runtime.onMessage.addListener(callback),
   removeStorage: async key => await chrome.storage.sync.remove(key),
   updateStorage: async (key, value) => {
-    const { [key]: savedLinks } = await chrome.storage.sync.get(key);
-    const newLinks = [...savedLinks, value];
+    try {
+      const { [key]: savedLinks } = await chrome.storage.sync.get(key);
+      const newLinks = [...savedLinks, value];
 
-    await chrome.storage.sync.set({ [key]: newLinks });
+      await chrome.storage.sync.set({ [key]: newLinks });
+    } catch (e) {
+      console.error(e);
+    }
   },
   searchBookmarks: async query => {
-    const bookmarks = await chrome.bookmarks.search(query);
-    return bookmarks
-      .filter(bookmark => bookmark.title && bookmark.url && bookmark.dateAdded)
-      .map(bookmark => ({
-        url: bookmark.url,
-        title: bookmark.title,
-        date: bookmark.dateAdded,
-      }));
+    try {
+      const bookmarks = await chrome.bookdmarks.search(query);
+
+      return bookmarks
+        .filter(
+          bookmark => bookmark.title && bookmark.url && bookmark.dateAdded,
+        )
+        .map(bookmark => ({
+          url: bookmark.url,
+          title: bookmark.title,
+          date: bookmark.dateAdded,
+        }));
+    } catch (e) {
+      console.error(e);
+    }
   },
 };
 
