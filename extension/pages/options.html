@@ -7,12 +7,65 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
   <link rel="stylesheet" href="../libs/bulma.min.css">
   <link rel="stylesheet" href="./styles.css">
+
+  <script src="./options.js" type="module"></script>
 </head>
 
 <body>
-  <div id="root"></div>
-  <script src="./options.js" type="module"></script>
-  <script src="./handlers.js" type="module"></script>
+  <section class="hero is-small is-link">
+    <div class="hero-body">
+      <p class="title">
+        Bookmarks Viewer-Filter
+      </p>
+    </div>
+  </section>
+  <div class="container">
+    <section class="section pb-4">
+      <div class="columns is-1-mobile is-2-tablet">
+        <div class="column">
+          <form novalidate>
+            <x-search-box class="field has-addons"></x-search-box>
+          </form>
+        </div>
+
+        <div class="column">
+          <div class="field is-grouped is-grouped-right">
+            <p class="control">
+              <button disabled data-action="view-card" data-active="true" class="button" title="Card View">
+                <span class="icon">
+                  <i class="fas fa-th-large"></i>
+                </span>
+              </button>
+            </p>
+            <p class="control">
+              <button disabled data-action="view-list" class="button" title="List View">
+                <span class="icon">
+                  <i class="fas fa-list"></i>
+                </span>
+              </button>
+            </p>
+            <p class="control">
+              <button disabled data-action="sort-down" class="button" title="Sort Descending">
+                <span class="icon">
+                  <i class="fas fa-sort-numeric-down"></i>
+                </span>
+              </button>
+            </p>
+            <p class="control">
+              <button disabled data-action="sort-up" data-active="true" class="button" title="Sort Ascending">
+                <span class="icon">
+                  <i class="fas fa-sort-numeric-up"></i>
+                </span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section pt-4">
+      <x-search-results class="columns is-flex is-flex-wrap-wrap" id="search-results" results-length></x-search-results>
+    </section>
+  </div>
 </body>
 
 </html>
