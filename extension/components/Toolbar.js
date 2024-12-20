@@ -32,13 +32,13 @@ export class SortButtons extends HTMLElement {
       this.sort === 'desc' ? 'fa-sort-numeric-down' : 'fa-sort-numeric-up';
 
     this.innerHTML = `
-  		<p class="control">
-  			<button ${disabled} data-sort="desc" class="button" title="Sort Descending">
-  				<span class="icon">
-  					<i class="fas ${sort}"></i>
-  				</span>
-  			</button>
-  		</p>
+      <p class="control">
+        <button ${disabled} data-sort="desc" class="button" title="Sort Descending">
+          <span class="icon">
+            <i class="fas ${sort}"></i>
+          </span>
+        </button>
+      </p>
     `;
   }
 }
