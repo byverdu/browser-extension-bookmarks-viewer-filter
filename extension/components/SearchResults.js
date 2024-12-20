@@ -1,24 +1,48 @@
+const sortBookmarksByDate = action =>
+  action.includes('asc')
+    ? (a, b) => a.date - b.date
+    : (a, b) => b.date - a.date;
+
 export class SearchResults extends HTMLElement {
-  static observedAttributes = ['results-length'];
+  static observedAttributes = ['results-length', 'sort'];
 
   constructor() {
     super();
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'results-length' && newValue) {
-      if (this.getAttribute('data-api-error')) {
-        this.renderError();
-      } else {
-        Number(newValue) > 0
-          ? this.renderResults()
-          : this.renderNoResults(this.getAttribute('data-search-term'));
-      }
+  get bookmarks() {
+    return window.bookmarks ?? [];
+  }
+
+  resultsLengthCallback(newValue) {
+    if (this.getAttribute('data-api-error')) {
+      this.renderError();
+    } else {
+      const sort = this.getAttribute('sort');
+      const bookmarks = this.bookmarks.sort(sortBookmarksByDate(sort));
+
+      Number(newValue) > 0
+        ? this.renderResults(bookmarks)
+        : this.renderNoResults(this.getAttribute('data-search-term'));
     }
   }
 
-  renderResults = () =>
-    (this.innerHTML = window.bookmarks
+  sortCallback(newValue) {
+    this.renderResults(this.bookmarks.sort(sortBookmarksByDate(newValue)));
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'results-length' && newValue) {
+      this.resultsLengthCallback(newValue);
+    }
+
+    if (name === 'sort' && newValue !== oldValue) {
+      this.sortCallback(newValue);
+    }
+  }
+
+  renderResults = bookmarks =>
+    (this.innerHTML = bookmarks
       .map(
         ({ date, url, title }) => `
           <div class="column is-one-third">

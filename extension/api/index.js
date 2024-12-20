@@ -27,7 +27,7 @@
   },
   searchBookmarks: async query => {
     try {
-      const bookmarks = await chrome.bookdmarks.search(query);
+      const bookmarks = await chrome.bookmarks.search(query);
 
       return bookmarks
         .filter(

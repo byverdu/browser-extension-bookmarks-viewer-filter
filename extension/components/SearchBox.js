@@ -54,6 +54,10 @@ export class SearchBox extends HTMLElement {
 
       results.setAttribute('data-search-term', this.input.value);
       results.setAttribute('results-length', res.length);
+
+      document
+        .getElementById('toolbar')
+        .setAttribute('disabled', res.length === 0);
     } catch (e) {
       results.setAttribute('data-api-error', true);
       results.setAttribute('results-length', null);
