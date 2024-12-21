@@ -11,6 +11,11 @@ export class SearchBox extends HTMLElement {
   constructor() {
     super();
     this._internals = this.attachInternals();
+
+    const template = document.getElementById('search-box-template');
+    const content = template.content.cloneNode(true);
+
+    this.appendChild(content);
   }
 
   get input() {
@@ -22,8 +27,6 @@ export class SearchBox extends HTMLElement {
   }
 
   connectedCallback() {
-    this.render();
-
     this.input.addEventListener('keyup', this.keyUpHandler.bind(this));
     this._internals.form.addEventListener(
       'submit',
@@ -64,21 +67,5 @@ export class SearchBox extends HTMLElement {
 
       console.error(e);
     }
-  }
-
-  render() {
-    this.innerHTML = `
-      <p class="control is-expanded">
-        <input id="search-bookmark-input" class="input" type="text" placeholder="Type a url, title or a search term" />
-      </p>
-      <p class="control">
-        <button type="submit" disabled id="search-bookmark-cta" class="button is-link">
-          <span class="icon">
-            <i class="fas fa-filter"></i>
-          </span>
-          <span>Filter</span>
-        </button>
-      </p>
-    `;
   }
 }
