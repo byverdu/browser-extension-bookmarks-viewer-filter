@@ -46,6 +46,7 @@ export class SearchBox extends HTMLElement {
     e.preventDefault();
 
     const results = document.getElementById('search-results');
+    let messageType = '';
 
     try {
       const res = await sendMessage({
@@ -54,16 +55,17 @@ export class SearchBox extends HTMLElement {
       });
 
       window.bookmarks = res;
+      messageType = res.length ? 'info' : 'warning';
 
-      results.setAttribute('data-search-term', this.input.value);
+      results.setAttribute('search-term', this.input.value);
       results.setAttribute('results-length', res.length);
+      results.setAttribute('message-type', messageType);
 
       document
         .getElementById('toolbar')
         .setAttribute('disabled', res.length === 0);
     } catch (e) {
-      results.setAttribute('data-api-error', true);
-      results.setAttribute('results-length', null);
+      results.setAttribute('message-type', 'error');
 
       console.error(e);
     }

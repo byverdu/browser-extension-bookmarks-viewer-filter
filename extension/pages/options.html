@@ -56,6 +56,38 @@
       </button>
     </p>
   </template>
+  <template id="search-result-info-template">
+    <div class="message is-info">
+      <div class="message-body">
+        <h6 class="is-flex is-align-items-center has-text-primary-20-invert pb-2">
+          <span class="icon">
+            <i class="fas fa-calendar-alt"></i>
+          </span>
+          <slot name="date"></slot>
+        </h6>
+        <p class="has-text-primary-65">
+          <slot name="link">
+            <a href target="_blank"></a>
+          </slot>
+        </p>
+      </div>
+    </div>
+  </template>
+  <template id="search-result-warning-template">
+    <div class="message is-warning">
+      <div class="message-body">
+        <p class="sub-title has-text-primary-20-invert pb-2">No results found for:</p>
+        <code><slot name="term"></slot></code>
+      </div>
+    </div>
+  </template>
+  <template id="search-result-error-template">
+    <div class="message is-danger">
+      <div class="message-body">
+        <p class="sub-title has-text-primary-20-invert">Error fetching bookmarks, please try again.</p>
+      </div>
+    </div>
+  </template>
 </body>
 
 </html>
