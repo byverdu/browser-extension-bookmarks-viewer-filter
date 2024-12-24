@@ -15,11 +15,12 @@ export class SearchResults extends HTMLElement {
   }
 
   attributeChangedCallback() {
-    const sort = this.getAttribute('sort');
     const messageType = this.getAttribute('message-type');
 
     if (messageType === 'info') {
-      this.renderResults(this.bookmarks.sort(sortBookmarksByDate(sort)));
+      this.renderResults(
+        this.bookmarks.sort(sortBookmarksByDate(this.getAttribute('sort'))),
+      );
     }
 
     if (messageType === 'warning') {

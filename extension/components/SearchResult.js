@@ -14,7 +14,7 @@ export class SearchResult extends HTMLElement {
     const content = template.content.cloneNode(true);
 
     this.appendChild(content);
-    this.updateContent();
+    this.render();
   }
 
   get messageType() {
@@ -31,7 +31,7 @@ export class SearchResult extends HTMLElement {
     return columnClass[this.messageType];
   }
 
-  updateContent() {
+  render() {
     this.className = `column ${this.columnClassName}`;
 
     if (this.messageType === 'info') {
@@ -58,7 +58,7 @@ export class SearchResult extends HTMLElement {
 
   attributeChangedCallback() {
     if (this.isConnected) {
-      this.updateContent();
+      this.render();
     }
   }
 }
